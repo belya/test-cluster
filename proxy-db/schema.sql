@@ -12,6 +12,7 @@ INSERT INTO connections (connname, connstr) VALUES ('db1', 'host=db1 port=5432 u
 INSERT INTO connections (connname, connstr) VALUES ('db2', 'host=db2 port=5432 user=root password=root dbname=db');
 
 
+-- TODO add errors processing
 CREATE FUNCTION proxy_select_sql(sql VARCHAR, types VARCHAR) RETURNS VARCHAR
     language plpgsql
 AS $$
@@ -34,6 +35,7 @@ END;
 $$;
 
 
+-- TODO return records instead of table with fixed types
 CREATE FUNCTION proxy_users() RETURNS TABLE(id VARCHAR, version INTEGER)
     language plpgsql
 AS $$
