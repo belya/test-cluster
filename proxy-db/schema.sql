@@ -12,8 +12,7 @@ INSERT INTO connections (connname, connstr) VALUES ('db1', 'host=db1 port=5432 u
 INSERT INTO connections (connname, connstr) VALUES ('db2', 'host=db2 port=5432 user=root password=root dbname=db');
 
 
--- TODO add errors processing
-CREATE FUNCTION proxy_select_sql(sql VARCHAR, types VARCHAR) RETURNS VARCHAR
+CREATE FUNCTION proxy_sql(sql VARCHAR, types VARCHAR) RETURNS VARCHAR
     language plpgsql
 AS $$
 DECLARE
@@ -36,11 +35,12 @@ $$;
 
 
 -- TODO return records instead of table with fixed types
-CREATE FUNCTION proxy_users() RETURNS TABLE(id VARCHAR, version INTEGER)
+-- TODO add errors processing
+CREATE FUNCTION select_proxy_users() RETURNS TABLE(id VARCHAR, version INTEGER)
     language plpgsql
 AS $$
 BEGIN
-    RETURN QUERY EXECUTE proxy_select_sql(
+    RETURN QUERY EXECUTE proxy_sql(
         'SELECT * FROM users;', 
         'id VARCHAR, version INTEGER'
     );
@@ -48,7 +48,20 @@ END;
 $$;
 
 
+-- TODO add errors processing
+CREATE FUNCTION update_proxy_users(update_sql VARCHAR) RETURNS void
+    language plpgsql
+AS $$
+BEGIN
+    EXECUTE proxy_sql(
+        update_sql, 
+        'response VARCHAR'
+    );
+END;
+$$;
+
+
 CREATE VIEW users AS (
     SELECT *
-    FROM proxy_users()
+    FROM select_proxy_users()
 );
