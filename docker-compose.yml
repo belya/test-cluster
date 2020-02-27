@@ -2,7 +2,7 @@ version: '3'
 
 services:
     db1:
-        image: postgres:latest
+        build: ./docker-postgresql
         container_name: db1
         volumes:
             - ./db1-schema:/docker-entrypoint-initdb.d/
@@ -14,7 +14,7 @@ services:
             - 5434:5432
 
     db2:
-        image: postgres:latest
+        build: ./docker-postgresql
         container_name: db2
         volumes:
             - ./db2-schema:/docker-entrypoint-initdb.d/
@@ -26,13 +26,25 @@ services:
             - 5433:5432
 
     proxydb:
-        image: postgres:latest
+        build: ./docker-postgresql
         container_name: proxydb
         volumes:
-            - ./proxy-db:/docker-entrypoint-initdb.d/
+            - ./proxy-db-schema:/docker-entrypoint-initdb.d/
         environment:
             - POSTGRES_DB=db
             - POSTGRES_USER=root
             - POSTGRES_PASSWORD=root
         ports:
             - 5432:5432
+
+    dwhdb:
+        build: ./docker-postgresql
+        container_name: dwhdb
+        volumes:
+            - ./dwh-db-schema:/docker-entrypoint-initdb.d/
+        environment:
+            - POSTGRES_DB=db
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=root
+        ports:
+            - 5431:5432
