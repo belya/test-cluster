@@ -1,4 +1,4 @@
--- PL/proxy START
+-- PL/Proxy config START
 
 CREATE FOREIGN DATA WRAPPER plproxy;
 
@@ -24,11 +24,11 @@ RETURNS void AS 'plproxy' LANGUAGE C;
 -- language
 CREATE OR REPLACE LANGUAGE plproxy HANDLER plproxy_call_handler VALIDATOR plproxy_validator;
 
--- PL/proxy END
+-- PL/Proxy config END
 
 CREATE OR REPLACE FUNCTION get_users(
-    po_id OUT VARCHAR,
-    po_version OUT INTEGER
+    po_id       OUT VARCHAR,
+    po_version  OUT INTEGER
 ) RETURNS SETOF RECORD
 LANGUAGE plproxy AS $$
     CLUSTER 'cluster';
@@ -40,38 +40,3 @@ LANGUAGE plproxy AS $$
     CLUSTER 'cluster';
     RUN ON ALL;
 $$;
-
--- CREATE FUNCTION proxy_sql(sql VARCHAR, types VARCHAR) RETURNS VARCHAR
---     language plpgsql
--- AS $$
--- DECLARE
---     v_proxy_sql VARCHAR;
--- BEGIN
---     SELECT
---     string_agg(
---         'SELECT * FROM dblink('
---         || '''' || connstr || ''', '
---         || '''' || sql || ''')' 
---         || ' AS t_' || connname || '(' || types || ')', 
---         ' UNION '
---     )
---     INTO v_proxy_sql
---     FROM connections;
-
---     RETURN v_proxy_sql;
--- END;
--- $$;
-
-
--- -- TODO return records instead of table with fixed types
--- -- TODO add errors processing
--- CREATE FUNCTION select_proxy_users() RETURNS TABLE(id VARCHAR, version INTEGER)
---     language plpgsql
--- AS $$
--- BEGIN
---     RETURN QUERY EXECUTE proxy_sql(
---         'SELECT * FROM users;', 
---         'id VARCHAR, version INTEGER'
---     );
--- END;
--- $$;

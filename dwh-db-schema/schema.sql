@@ -1,11 +1,12 @@
 CREATE EXTENSION dblink;
 
-CREATE FUNCTION get_users(
-    po_id OUT VARCHAR,
-    po_version OUT INTEGER
+CREATE OR REPLACE FUNCTION get_users(
+    po_id       OUT VARCHAR,
+    po_version  OUT INTEGER
 ) RETURNS SETOF RECORD
     language plpgsql
 AS $$
+DECLARE
 BEGIN
     RETURN QUERY 
         SELECT * 
