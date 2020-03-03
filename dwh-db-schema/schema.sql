@@ -1,6 +1,6 @@
 CREATE EXTENSION dblink;
 
-CREATE OR REPLACE FUNCTION get_users(
+CREATE OR REPLACE FUNCTION dwh_get_users(
     po_id       OUT VARCHAR,
     po_version  OUT INTEGER
 ) RETURNS SETOF RECORD
